@@ -7,5 +7,7 @@ router.register(r'recipes', RecipeViewSet)
 
 urlpatterns = [
      path('api/', include(router.urls)),
-     
+     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+     path('api/token/', TokenRefreshView.as_view(), name='token_refresh'),
+
 ]
