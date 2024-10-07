@@ -11,6 +11,7 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default='', null=True)
+    is_scheduled = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

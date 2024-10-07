@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Recipe
 from .serializers import RecipeSerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
@@ -26,6 +26,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response({'error':'You do not have the permission to del this recipe'}, status=403)
         
         return super().destroy(request, *args, **kwargs)
+    
+    def schedule(self, request, *args, **kwargs):
+        recipe= self.get_object()
+        if request.user != recipe.owner and not request.user.groups.filter(name='Admin').exists():
+            return Response({'error':'You do not have the ability to schedule a recipe'}, status=status.HTTP_403_FORBIDDEN)
+        
+        recipe.is_scheduled = True
+        recipe.save()
+
+        return Response({'message': 'Recipe scheduled successfully'}, status=status.HTTP_200_OK)
+
 
 
 
