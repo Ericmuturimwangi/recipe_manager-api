@@ -34,3 +34,5 @@ django-react-auth/backend/
 django-react-auth/frontend/
 django_ecommerce/Django-Ecommerce/
 planandplate/Recipe/
+*.pyc
+__pycache__/
