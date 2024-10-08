@@ -1,12 +1,14 @@
 from django.shortcuts import render
-from .models import Recipe
-from .serializers import RecipeSerializer
+from .models import Recipe, FavoriteRecipe
+from .serializers import RecipeSerializer, FavoriteRecipeSerializer
 from rest_framework import viewsets, status
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAdminOrOwner
 from rest_framework.response import Response
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -37,6 +39,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response({'message': 'Recipe scheduled successfully'}, status=status.HTTP_200_OK)
 
+
+class FavoriteRecipeViewSet(viewsets.ModelViewSet):
+    queryset=FavoriteRecipe.objects.all()
+    serializer_class = FavoriteRecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return FavoriteRecipe.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 
