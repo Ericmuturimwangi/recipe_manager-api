@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Recipe, FavoriteRecipe
-from .serializers import RecipeSerializer, FavoriteRecipeSerializer
+from .models import Recipe, FavoriteRecipe, Review
+from .serializers import RecipeSerializer, FavoriteRecipeSerializer, ReviewSerializer
 from rest_framework import viewsets, status
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -51,6 +51,17 @@ class FavoriteRecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class ReviewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return FavoriteRecipe.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 

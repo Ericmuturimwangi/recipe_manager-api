@@ -39,3 +39,16 @@ class Schedule(models.Model):
     time = models.TimeField()
     difficulty = models.CharField(max_length=255, choices=[('Easy', 'Easy'), ('Medium', 'Medium'), ('Hard', 'Hard')])
     prep_time = models.IntegerField(help_text="Preparation Time in minutes")
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i,i) for i in range(1,6)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'recipe') #prevents duplicate reviews
+
+        
