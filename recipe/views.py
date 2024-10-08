@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAdminOrOwner
 from rest_framework.response import Response
-
+from rest_framework.decorators import action
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
@@ -53,15 +53,19 @@ class FavoriteRecipeViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return FavoriteRecipe.objects.filter(user=self.request.user)
+        recipe_pk=self.kwargs['recipe_pk']
+        return Review.objects.filter(recipe_id=recipe_pk)
     
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # @action(detail=False, methods=['get'])
+    # def list(self,request, recipe_pk=None):
+    # # listing the reviews
+    #     reviews = self.get_queryset()
+    #     serializer = self.get_serializer(reviews, many=True)
+    #     return Response(serializer.data)
+    
 
 
 
