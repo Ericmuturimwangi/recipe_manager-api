@@ -59,12 +59,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         recipe_pk=self.kwargs['recipe_pk']
         return Review.objects.filter(recipe_id=recipe_pk)
     
-    # @action(detail=False, methods=['get'])
-    # def list(self,request, recipe_pk=None):
-    # # listing the reviews
-    #     reviews = self.get_queryset()
-    #     serializer = self.get_serializer(reviews, many=True)
-    #     return Response(serializer.data)
+    
     
 
 
