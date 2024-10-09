@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django_filters',
     # app
     'recipe',
+    'User_Activity',
 
 ]
 
