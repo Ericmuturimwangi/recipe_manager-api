@@ -17,6 +17,8 @@ class Recipe(models.Model):
         return self.title
     
     
+    
+    
 class FavoriteRecipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
