@@ -75,7 +75,7 @@ class RecipeRecommendationView(APIView):
     def get(self, request):
         recommendations = hybrid_recommendations(request.user)
         # Serialize the recommended recipes
-        serializer = RecipeSerializer(recommendations, many=True)  # Assuming you have a RecipeSerializer
+        serializer = RecipeSerializer(recommendations, many=True)  
         return Response(serializer.data, status=200)
     
 
