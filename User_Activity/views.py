@@ -2,10 +2,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import UserActivity
-from recipe.models import Recipe, FavoriteRecipe
+from recipe.models import Recipe, FavoriteRecipe,UserActivity
 from recipe.serializers import RecipeSerializer, ReviewSerializer
-
+from rest_framework import status
 class RecipeDetailView(APIView):
     permission_classes = [IsAuthenticated] 
 
@@ -22,7 +21,7 @@ class FavoriteRecipeView(APIView):
 
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
-        FavoriteRecipe.objects.create(user=request.user, recipe=recipe)
+        FavoriteRecipe.objects.get_or_create(user=request.user, recipe=recipe)
 
         # Log the activity
         UserActivity.objects.create(user=request.user, recipe=recipe, action='favorite')
@@ -33,6 +32,10 @@ class ReviewCreateView(APIView):
 
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
+        
+        if recipe.reviews.filter(user=request.user).exists():
+            return Response({'error': 'You have already reviewed this recipe.'}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = ReviewSerializer(data=request.data)
 
         if serializer.is_valid():

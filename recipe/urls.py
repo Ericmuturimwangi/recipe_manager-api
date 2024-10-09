@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet) 
 router.register(r'favorites', FavoriteRecipeViewSet, basename='favorite-recipe')
-router.register(r'recipes/(?P<recipe_pk>\d+)/reviews', ReviewCreateView, basename='review')
+
 
 urlpatterns = [
     path('api/', include(router.urls)),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('api/recipes/<int:pk>/schedule/', RecipeViewSet.as_view({'post': 'schedule'}), name='recipe-schedule'),
     path('api/recipes/recommendations/', RecipeRecommendationView.as_view(), name='recipe-recommendations'),
     path('api/user/profile/', UserProfileView.as_view(), name='user-profile'),
+    path('api/recipes/<int:pk>/review/', ReviewCreateView.as_view(), name='create-review'),
 ]
