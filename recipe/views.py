@@ -8,7 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAdminOrOwner
 from rest_framework.response import Response
 from rest_framework.decorators import action
-
+from .hybrid_recommendations import hybrid_recommendations
+from rest_framework.views import APIView
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -38,6 +39,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe.save()
 
         return Response({'message': 'Recipe scheduled successfully'}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def get_recommendations(self, request):
+     
+        recommended_recipes = []
+        return Response(recommended_recipes)
+    
 
 
 class FavoriteRecipeViewSet(viewsets.ModelViewSet):
@@ -59,7 +67,16 @@ class ReviewViewSet(viewsets.ModelViewSet):
         recipe_pk=self.kwargs['recipe_pk']
         return Review.objects.filter(recipe_id=recipe_pk)
     
-    
+
+class RecipeRecommendationView(APIView):
+       
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        recommendations = hybrid_recommendations(request.user)
+        # Serialize the recommended recipes
+        serializer = RecipeSerializer(recommendations, many=True)  
+        return Response(serializer.data, status=200)
     
 
 
